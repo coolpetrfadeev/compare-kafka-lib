@@ -1,0 +1,8 @@
+Список команд которые создают kafka network запускают 2 зукипера 2 кафки и go приложение :
+docker run --network="host" compare-kafka-libs
+docker run -d --name zookeeper --network kafka-net -p 2181:2181 zookeeper:3.5
+docker run -d --name zookeeper-2 --network kafka-net -p 2182:2181 zookeeper:3.5
+docker run -d --name kafka-1 --network kafka-net -p 9092:9092 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper-1:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9092 -e KAFKA_BROKER_ID=1 confluentinc/cp-kafka:latest
+docker run -d --name kafka-2 --network kafka-net -p 9093:9093 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper-2:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9093 -e KAFKA_BROKER_ID=2 confluentinc/cp-kafka:latest
+docker build -t go-kafka-app .
+docker run --network="kafka-net" go-kafka-app
